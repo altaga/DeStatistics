@@ -4,6 +4,7 @@ import AutoResizingTextArea from "@/app/statistics/components/autoResTextArea";
 import { Button } from "@mui/material";
 import styles from "./chat.module.css";
 import Linkify from "react-linkify";
+import runGraph from "@/actions/runGraph";
 
 export default function Chat() {
   // Refs
@@ -13,7 +14,14 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [send, setSend] = useState(false);
 
+  async function chatPrompt(message) {
+    const response = await runGraph(message);
+    console.log(response);
+    sendMessage(response, true);
+  }
+
   const sendMessage = (message = "", ai = false) => {
+    if (!ai) chatPrompt(message);
     let temp = messages;
     temp.push({
       ai,
@@ -22,9 +30,10 @@ export default function Chat() {
     });
     temp.sort((a, b) => a.timestamp - b.timestamp);
     setMessages(temp);
-    setMessage("");
+    setMessage(" ");
     setTimeout(() => {
       scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
+      setMessage("");
     }, 50);
   };
 

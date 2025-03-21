@@ -1,11 +1,12 @@
 "use client";
 import { ThemeProvider } from "@emotion/react";
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import { createTheme } from "@mui/material";
 import { lightBlue, lightGreen } from "@mui/material/colors";
+import { PrivyProvider } from "@privy-io/react-auth";
 
 const theme = createTheme({
   palette: {
@@ -21,5 +22,24 @@ const theme = createTheme({
 });
 
 export default function Providers({ children }) {
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+  return (
+    <PrivyProvider
+      appId={process.env.NEXT_PUBLIC_PRIVY_APPID}
+      clientId={process.env.NEXT_PUBLIC_PRIVY_CLIENTID}
+      config={{
+        // Customize Privy's appearance in your app
+        appearance: {
+          theme: "light",
+          accentColor: "#676FFF",
+          logo: "https://your-logo-url",
+        },
+        // Create embedded wallets for users who don't have a wallet
+        embeddedWallets: {
+          createOnLogin: "users-without-wallets",
+        },
+      }}
+    >
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </PrivyProvider>
+  );
 }

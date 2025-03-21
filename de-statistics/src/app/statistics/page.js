@@ -10,16 +10,15 @@ export default function Statistic() {
   // States
   const [data, setData] = useState({});
 
-  async function getData() {
-    const response = await getDB();
+  async function getData(key) {
+    const response = await getDB(key);
     setData(response);
   }
 
   useEffect(() => {
-    getData();
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    console.log(urlParams.get("db"));
+    getData(urlParams.get("db"));
   }, []);
 
   return (
