@@ -4,7 +4,7 @@ import styles from "./headerComponent.module.css";
 import { usePrivy } from "@privy-io/react-auth";
 
 export default function HeaderComponent() {
-  const { ready, login } = usePrivy();
+  const { ready, login, logout, authenticated } = usePrivy();
   return (
     <div className={styles.headerBar}>
       <div className={styles.logoContainer}>
@@ -20,9 +20,11 @@ export default function HeaderComponent() {
         <span className={styles.titleLogo}>DeStatistics</span>
       </div>
       <ButtonGroup variant="contained" aria-label="Basic button group">
-        <Button onClick={() => login()} disabled={!ready}>
-          Connect
-        </Button>
+        {ready && authenticated ? (
+          <Button disabled={!ready} onClick={() => logout()}>Disconnect</Button>
+        ) : (
+          <Button disabled={!ready} onClick={() => login()}>Connect</Button>
+        )}
       </ButtonGroup>
     </div>
   );
