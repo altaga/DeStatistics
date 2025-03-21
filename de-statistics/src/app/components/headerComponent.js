@@ -2,9 +2,17 @@
 import { Button, ButtonGroup } from "@mui/material";
 import styles from "./headerComponent.module.css";
 import { usePrivy } from "@privy-io/react-auth";
+import { useEffect } from "react";
 
 export default function HeaderComponent() {
   const { ready, login, logout, authenticated } = usePrivy();
+
+  useEffect(() => {
+    if (authenticated) {
+      
+    }
+  }, [authenticated]);
+
   return (
     <div className={styles.headerBar}>
       <div className={styles.logoContainer}>

@@ -27,6 +27,10 @@ export default function Providers({ children }) {
       appId={process.env.NEXT_PUBLIC_PRIVY_APPID}
       clientId={process.env.NEXT_PUBLIC_PRIVY_CLIENTID}
       config={{
+        appearance: {
+          // Defaults to 'light'
+          theme: 'dark',
+        },
         // Create embedded wallets for users who don't have a wallet
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
