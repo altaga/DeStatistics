@@ -107,3 +107,7 @@
 .topicButton:hover {
   background-color: #455f7c;
 }
+
+.topicButton:disabled{
+  background-color: #001328;
+}

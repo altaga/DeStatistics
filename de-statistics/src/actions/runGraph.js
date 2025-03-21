@@ -12,9 +12,10 @@ const requestOptions = {
 };
 
 export default async function runGraph(message, context = "") {
+  const tempContext = context === `{"uploader":"","description":"","columns":[""],"row":[""],"dbKey":"","data":[[0]]}` ? "" : context;
   return new Promise((resolve, reject) => {
     fetch(
-      `${OLLAMA_URL}/run_graph?message=${message}&context=${context}`,
+      `${OLLAMA_URL}/run_graph?message=${message}&context=${tempContext}`,
       requestOptions
     )
       .then((response) => response.json())

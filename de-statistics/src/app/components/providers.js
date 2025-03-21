@@ -1,4 +1,5 @@
 "use client";
+import { ContextProvider } from "@/utils/contextModule";
 import { ThemeProvider } from "@emotion/react";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -7,6 +8,7 @@ import "@fontsource/roboto/700.css";
 import { createTheme } from "@mui/material";
 import { lightBlue, lightGreen } from "@mui/material/colors";
 import { PrivyProvider } from "@privy-io/react-auth";
+import { base, baseSepolia } from "viem/chains";
 
 const theme = createTheme({
   palette: {
@@ -23,21 +25,23 @@ const theme = createTheme({
 
 export default function Providers({ children }) {
   return (
-    <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APPID}
-      clientId={process.env.NEXT_PUBLIC_PRIVY_CLIENTID}
-      config={{
-        appearance: {
-          // Defaults to 'light'
-          theme: 'dark',
-        },
-        // Create embedded wallets for users who don't have a wallet
-        embeddedWallets: {
-          createOnLogin: "users-without-wallets",
-        },
-      }}
-    >
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
-    </PrivyProvider>
+    <ContextProvider>
+      <PrivyProvider
+        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
+        clientId={process.env.NEXT_PUBLIC_PRIVY_CLIENT_ID}
+        config={{
+          defaultChain: baseSepolia,
+          supportedChains: [baseSepolia],
+          appearance: {
+            theme: "dark",
+          },
+          embeddedWallets: {
+            createOnLogin: "users-without-wallets",
+          },
+        }}
+      >
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </PrivyProvider>
+    </ContextProvider>
   );
 }

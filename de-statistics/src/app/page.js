@@ -1,25 +1,25 @@
 "use client";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-
-const trendingTopics = [
-  "Artificial Intelligence",
-  "Climate Change",
-  "Cryptocurrency",
-  "Mental Health Awareness",
-  "Space Exploration",
-  "Quantum Computing",
-  "Biotechnology",
-  "Cybersecurity",
-  "Augmented Reality",
-  "Virtual Reality",
-  "5G Technology",
-  "Internet of Things",
-  "Blockchain",
-  "Sustainable Energy",
-  "Multimodal AI",
-];
+import { getAllDBs } from "@/actions/fetchDataset";
 
 export default function Main() {
+  const [data, setData] = useState([""]);
+
+  const setupDBs = async () => {
+    try {
+      const res = await getAllDBs();
+      setData(res);
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    setupDBs();
+  }, []);
+
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -36,9 +36,9 @@ export default function Main() {
         <button className={styles.searchButton}>Search</button>
       </div>
       <div className={styles.buttonsContainer}>
-        {trendingTopics.map((topic, index) => (
-          <button key={index} className={styles.topicButton}>
-            {topic}
+        {data.map((topic, index) => (
+          <button onClick={() => window.location.href = `/statistics?db=${topic.key}`} key={index} className={styles.topicButton}>
+            {topic.title}
           </button>
         ))}
       </div>

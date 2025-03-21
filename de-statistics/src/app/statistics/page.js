@@ -25,7 +25,7 @@ export default function Statistic() {
     <div className={styles.fullContainer}>
       <div className={styles.title}>
         {" "}
-        Statistics Information {"->"} and Title
+        {data.title} {"->"} {data.description}
       </div>
       <div className={styles.container}>
         <div className={styles.chartContainer}>

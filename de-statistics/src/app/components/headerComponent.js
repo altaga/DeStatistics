@@ -5,17 +5,17 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useEffect } from "react";
 
 export default function HeaderComponent() {
-  const { ready, login, logout, authenticated } = usePrivy();
+  const { ready, login, logout, authenticated, user } = usePrivy();
 
   useEffect(() => {
     if (authenticated) {
-      
+      console.log(user.wallet.address);
     }
   }, [authenticated]);
 
   return (
     <div className={styles.headerBar}>
-      <div className={styles.logoContainer}>
+      <div className={styles.logoContainer} onClick={() => window.location.href = "/"}>
         <img
           src="/logo.png"
           alt="App Logo"
@@ -27,13 +27,28 @@ export default function HeaderComponent() {
         />
         <span className={styles.titleLogo}>DeStatistics</span>
       </div>
-      <ButtonGroup variant="contained" aria-label="Basic button group">
-        {ready && authenticated ? (
-          <Button disabled={!ready} onClick={() => logout()}>Disconnect</Button>
+      <div className={styles.logoContainer}>
+        {authenticated ? (
+          <span className={styles.address}>
+            {" "}
+            {user.wallet.address.substring(0, 6)}...
+            {user.wallet.address.substring(user.wallet.address.length - 4)}
+          </span>
         ) : (
-          <Button disabled={!ready} onClick={() => login()}>Connect</Button>
+          <span />
         )}
-      </ButtonGroup>
+        <ButtonGroup variant="contained" aria-label="Basic button group">
+          {ready && authenticated ? (
+            <Button disabled={!ready} onClick={() => logout()}>
+              Disconnect
+            </Button>
+          ) : (
+            <Button disabled={!ready} onClick={() => login()}>
+              Connect
+            </Button>
+          )}
+        </ButtonGroup>
+      </div>
     </div>
   );
 }

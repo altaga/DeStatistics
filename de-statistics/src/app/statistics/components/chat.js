@@ -5,8 +5,11 @@ import { Button } from "@mui/material";
 import styles from "./chat.module.css";
 import Linkify from "react-linkify";
 import runGraph from "@/actions/runGraph";
+import ContextModule from "@/utils/contextModule";
 
 export default function Chat() {
+  // Context
+  const myContext = React.useContext(ContextModule);
   // Refs
   const scrollableRef = useRef(null);
   // States
@@ -14,14 +17,14 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [send, setSend] = useState(false);
 
-  async function chatPrompt(message) {
-    const response = await runGraph(message);
+  async function chatPrompt(message, context = "") {
+    const response = await runGraph(message, context);
     console.log(response);
     sendMessage(response, true);
   }
 
   const sendMessage = (message = "", ai = false) => {
-    if (!ai) chatPrompt(message);
+    if (!ai) chatPrompt(message, JSON.stringify(myContext.value.data));
     let temp = messages;
     temp.push({
       ai,
@@ -113,7 +116,9 @@ export default function Chat() {
           }}
           variant="contained"
           color="myButton"
-          onClick={() => sendMessage(message)}
+          onClick={() => 
+            sendMessage(message)
+          }
         >
           <SendIcon style={{ fontSize: "2rem" }} />
         </Button>
