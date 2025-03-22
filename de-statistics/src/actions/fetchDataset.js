@@ -15,6 +15,7 @@ const walletClient = createWalletClient({
   transport: http(),
 });
 const client = new RecallClient({ walletClient });
+const bucketManager = client.bucketManager();
 
 let GeneralDB = {
   data: [],
@@ -46,11 +47,15 @@ async function fetchDB(url) {
   });
 }
 
-async function updateDB() {
+export async function updateDB() {
   return new Promise(async (resolve, reject) => {
     try {
-      let res = await fetch(process.env.RECALL_URL, requestOptions);
-      let parsed = await res.json();
+      const { result: object } = await bucketManager.get(
+        process.env.RECALL_BUCKET,
+        "datasets"
+      );
+      const contents = new TextDecoder().decode(object);
+      let parsed = JSON.parse(contents);
       GeneralDB = parsed;
       console.log(GeneralDB);
       resolve("ok");
@@ -90,6 +95,7 @@ export async function getAllDBs() {
   });
 }
 
+// updateDB() when server starts
 updateDB()
   .then(() => console.log("DB updated successfully"))
   .catch((err) => console.log(err));

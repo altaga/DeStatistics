@@ -1,12 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import styles from "@/app/page.module.css";
-import { getAllDBs } from "@/actions/fetchDataset";
+import { getAllDBs, updateDB } from "@/actions/fetchDataset";
+import { useRouter } from "next/navigation";
 
 export default function Main() {
   const [data, setData] = useState([""]);
+  const router = useRouter();
 
   const setupDBs = async () => {
+    await updateDB(); // update DB 
     try {
       const res = await getAllDBs();
       setData(res);
@@ -37,7 +40,11 @@ export default function Main() {
       </div>
       <div className={styles.buttonsContainer}>
         {data.map((topic, index) => (
-          <button onClick={() => window.location.href = `/statistics?db=${topic.key}`} key={index} className={styles.topicButton}>
+          <button
+            onClick={() => router.push(`/statistics?db=${topic.key}`)}
+            key={index}
+            className={styles.topicButton}
+          >
             {topic.title}
           </button>
         ))}

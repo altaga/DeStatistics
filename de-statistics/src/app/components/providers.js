@@ -37,7 +37,7 @@ export default function Providers({ children }) {
             theme: "dark",
           },
           embeddedWallets: {
-            createOnLogin: "users-without-wallets",
+            createOnLogin: "all-users",
           },
         }}
       >

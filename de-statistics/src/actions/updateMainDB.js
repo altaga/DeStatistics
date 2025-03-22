@@ -21,6 +21,23 @@ const requestOptions = {
   redirect: "follow",
 };
 
+/*
+{
+  data: [
+    {
+      key: 'gdp',
+      uploader: '0x4bb24Db28959248E00792aDAF04a8EB32C5AB3Ef',
+      source: 'World Bank',
+      release: '1738044000',
+      title: 'World Bank GDP',
+      description: 'GDP National accounts data and OECD National Accounts.',
+      bucket: '0xff000000000000000000000000000000000000d1',
+      verified: true,
+    }
+  ]
+}
+*/
+
 export async function updateMainDB(metadata) {
   return new Promise(async (resolve, reject) => {
     try {

@@ -1,19 +1,29 @@
 "use client";
 import { Button, ButtonGroup } from "@mui/material";
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import React, { useEffect } from "react";
 import styles from "@/app/components/headerComponent.module.css";
 import { toast } from "react-toastify";
 import { checkServer } from "@/actions/serverHealth";
+import { useRouter } from "next/navigation";
 
 export default function HeaderComponent() {
   const { ready, login, logout, authenticated, user } = usePrivy();
+  const wallet = useWallets();
+
+  const router = useRouter();
 
   async function checkServerCall() {
     const res = await checkServer();
     if (res === false) toast.error("Server");
     else toast.success("Server");
   }
+
+  useEffect(() => {
+    if (ready && authenticated) {
+      console.log(wallet);
+    }
+  }, [ready]);
 
   useEffect(() => {
     checkServerCall();
@@ -40,8 +50,8 @@ export default function HeaderComponent() {
         {authenticated ? (
           <span className={styles.address}>
             {" "}
-            {user.wallet.address.substring(0, 6)}...
-            {user.wallet.address.substring(user.wallet.address.length - 4)}
+            {user.wallet.address?.substring(0, 6)}...
+            {user.wallet.address?.substring(user.wallet.address?.length - 4)}
           </span>
         ) : (
           <span />
@@ -63,10 +73,19 @@ export default function HeaderComponent() {
               <Button
                 className={styles.button}
                 disabled={!ready}
-                onClick={() => (window.location.href = "/upload")}
+                onClick={() => router.push("/upload")}
               >
                 Upload
               </Button>
+              {/**
+                <Button
+                  className={styles.button}
+                  disabled={!ready}
+                  onClick={() => exportWallet()}
+                >
+                  Export
+                </Button>
+              */}
             </React.Fragment>
           ) : (
             <Button

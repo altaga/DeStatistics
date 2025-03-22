@@ -8,6 +8,7 @@ import runGraph from "@/actions/runGraph";
 import ContextModule from "@/utils/contextModule";
 import {
   useActiveWallet,
+  usePrivy,
   useSendTransaction,
   useWallets,
 } from "@privy-io/react-auth";
@@ -21,12 +22,19 @@ export default function Chat({ bucket }) {
   // Refs
   const scrollableRef = useRef(null);
   // States
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      ai: true,
+      timestamp: new Date().getTime(),
+      message: "Hello, im DeSmond! How can I help you today?",
+    },
+  ]);
   const [message, setMessage] = useState("");
   const [send, setSend] = useState(false);
   const [loading, setLoading] = useState(false);
   // Hooks Privy
   const wallet = useWallets();
+  const { user } = usePrivy();
   // Contract
   const provider = new ethers.providers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_RPC
@@ -65,6 +73,9 @@ export default function Chat({ bucket }) {
   const sendTransactionRaw = async () => {
     return new Promise(async (resolve, reject) => {
       try {
+        const walletActive = wallet.wallets.find(
+          (wallet) => wallet.connectorType === user.wallet.connectorType
+        );
         const contract = new ethers.Contract(
           process.env.NEXT_PUBLIC_CONTRACT,
           abi,
@@ -73,12 +84,12 @@ export default function Chat({ bucket }) {
         const transaction = await contract.populateTransaction.interact(
           bucket,
           {
-            from: wallet.wallets[0].address,
+            from: walletActive.address,
             value: ethers.utils.parseEther(process.env.NEXT_PUBLIC_BASE_FEE),
           }
         );
         console.log(transaction);
-        const ethProvider = await wallet.wallets[0].getEthereumProvider();
+        const ethProvider = await walletActive.getEthereumProvider();
         const ethersProvider = new ethers.providers.Web3Provider(ethProvider);
         const signer = ethersProvider.getSigner();
         const tx = await signer.sendTransaction(transaction);
@@ -106,7 +117,6 @@ export default function Chat({ bucket }) {
   }, [send]);
 
   useEffect(() => {
-    sendMessage("Hello, im DeSmond! How can I help you today?", true);
     document.addEventListener("keydown", keyDownHandler);
     return () => {
       document.removeEventListener("keydown", keyDownHandler);
