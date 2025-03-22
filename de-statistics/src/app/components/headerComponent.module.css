@@ -35,3 +35,11 @@
     font-family: "Josefin Sans", sans-serif;
     font-weight: 400;
   }
+
+  .buttonGroup {
+    gap:10px
+  }
+
+  .button{
+    border-radius: 4px;
+  }

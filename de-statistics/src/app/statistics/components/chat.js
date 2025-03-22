@@ -2,12 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import AutoResizingTextArea from "@/app/statistics/components/autoResTextArea";
 import { Button } from "@mui/material";
-import styles from "./chat.module.css";
+import styles from "@/app/statistics/components/chat.module.css";
 import Linkify from "react-linkify";
 import runGraph from "@/actions/runGraph";
 import ContextModule from "@/utils/contextModule";
+import {
+  useActiveWallet,
+  useSendTransaction,
+  useWallets,
+} from "@privy-io/react-auth";
+import { ethers } from "ethers";
+import { abi } from "@/contracts/contract";
+import { resolve } from "styled-jsx/css";
 
-export default function Chat() {
+export default function Chat({ bucket }) {
   // Context
   const myContext = React.useContext(ContextModule);
   // Refs
@@ -16,6 +24,13 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [send, setSend] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // Hooks Privy
+  const wallet = useWallets();
+  // Contract
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC
+  );
 
   async function chatPrompt(message, context = "") {
     const response = await runGraph(message, context);
@@ -40,6 +55,42 @@ export default function Chat() {
     }, 50);
   };
 
+  const allinone = async () => {
+    setLoading(true);
+    const check = await sendTransactionRaw();
+    check && sendMessage(message);
+    setLoading(false);
+  };
+
+  const sendTransactionRaw = async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const contract = new ethers.Contract(
+          process.env.NEXT_PUBLIC_CONTRACT,
+          abi,
+          provider
+        );
+        const transaction = await contract.populateTransaction.interact(
+          bucket,
+          {
+            from: wallet.wallets[0].address,
+            value: ethers.utils.parseEther(process.env.NEXT_PUBLIC_BASE_FEE),
+          }
+        );
+        console.log(transaction);
+        const ethProvider = await wallet.wallets[0].getEthereumProvider();
+        const ethersProvider = new ethers.providers.Web3Provider(ethProvider);
+        const signer = ethersProvider.getSigner();
+        const tx = await signer.sendTransaction(transaction);
+        await tx.wait();
+        resolve(true);
+      } catch (e) {
+        console.log(e);
+        reject(false);
+      }
+    });
+  };
+
   function keyDownHandler(event) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -48,8 +99,8 @@ export default function Chat() {
   }
 
   useEffect(() => {
-    if (send) {
-      sendMessage(message);
+    if (send && !loading) {
+      allinone();
       setSend(false);
     }
   }, [send]);
@@ -69,7 +120,7 @@ export default function Chat() {
           <div
             key={index}
             style={{
-              fontFamily: "monospace",
+              fontFamily: "Open Sans",
               whiteSpace: "pre-line",
               fontSize: "1.1rem",
               textAlign: "justify",
@@ -99,12 +150,14 @@ export default function Chat() {
       </div>
       <div className={styles.inputContainer}>
         <AutoResizingTextArea
+          disabled={loading}
           message={message}
           onChange={(value) => {
             setMessage(value);
           }}
         />
         <Button
+          disabled={loading}
           style={{
             margin: "0px 0px 0px 10px",
             aspectRatio: "1",
@@ -116,9 +169,7 @@ export default function Chat() {
           }}
           variant="contained"
           color="myButton"
-          onClick={() => 
-            sendMessage(message)
-          }
+          onClick={() => allinone()}
         >
           <SendIcon style={{ fontSize: "2rem" }} />
         </Button>

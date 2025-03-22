@@ -1,17 +1,16 @@
-
 export default function AutoResizingTextArea(props) {
-
   const handleChange = (event) => {
     props.onChange(event.target.value);
   };
 
   return (
     <textarea
+      disabled={props.disabled}
       placeholder="Type your message here..."
       value={props.message}
       onChange={handleChange}
       style={{
-        fontFamily: "monospace",
+        fontFamily: "Open Sans",
         fontSize: "16px",
         padding: "10px 10px 10px 10px",
         backgroundColor: "white",

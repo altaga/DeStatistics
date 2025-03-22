@@ -20,10 +20,12 @@
     "@recallnet/contracts": "^0.0.4",
     "@recallnet/sdk": "^0.0.7",
     "ethers": "^5.7.2",
+    "mui-file-input": "^7.0.0",
     "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-linkify": "^1.0.0-alpha",
+    "react-toastify": "^11.0.5",
     "viem": "^2.23.13"
   },
   "devDependencies": {

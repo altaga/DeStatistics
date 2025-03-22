@@ -1,21 +1,30 @@
 "use client";
 import { Button, ButtonGroup } from "@mui/material";
-import styles from "./headerComponent.module.css";
 import { usePrivy } from "@privy-io/react-auth";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import styles from "@/app/components/headerComponent.module.css";
+import { toast } from "react-toastify";
+import { checkServer } from "@/actions/serverHealth";
 
 export default function HeaderComponent() {
   const { ready, login, logout, authenticated, user } = usePrivy();
 
+  async function checkServerCall() {
+    const res = await checkServer();
+    if (res === false) toast.error("Server");
+    else toast.success("Server");
+  }
+
   useEffect(() => {
-    if (authenticated) {
-      console.log(user.wallet.address);
-    }
-  }, [authenticated]);
+    checkServerCall();
+  }, []);
 
   return (
     <div className={styles.headerBar}>
-      <div className={styles.logoContainer} onClick={() => window.location.href = "/"}>
+      <div
+        className={styles.logoContainer}
+        onClick={() => (window.location.href = "/")}
+      >
         <img
           src="/logo.png"
           alt="App Logo"
@@ -37,13 +46,34 @@ export default function HeaderComponent() {
         ) : (
           <span />
         )}
-        <ButtonGroup variant="contained" aria-label="Basic button group">
+        <ButtonGroup
+          className={styles.buttonGroup}
+          variant="contained"
+          aria-label="Basic button group"
+        >
           {ready && authenticated ? (
-            <Button disabled={!ready} onClick={() => logout()}>
-              Disconnect
-            </Button>
+            <React.Fragment>
+              <Button
+                className={styles.button}
+                disabled={!ready}
+                onClick={() => logout()}
+              >
+                Disconnect
+              </Button>
+              <Button
+                className={styles.button}
+                disabled={!ready}
+                onClick={() => (window.location.href = "/upload")}
+              >
+                Upload
+              </Button>
+            </React.Fragment>
           ) : (
-            <Button disabled={!ready} onClick={() => login()}>
+            <Button
+              className={styles.button}
+              disabled={!ready}
+              onClick={() => login()}
+            >
               Connect
             </Button>
           )}

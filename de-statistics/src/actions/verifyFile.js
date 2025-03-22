@@ -6,15 +6,10 @@ const myHeaders = new Headers();
 myHeaders.append("X-API-Key", process.env.OLLAMA_APIKEY);
 myHeaders.append("Content-Type", "application/json");
 
-export default async function runGraph(message, tempContext = "") {
-  const context =
-    tempContext ===
-    `{"uploader":"","description":"","columns":[""],"row":[""],"dbKey":"","data":[[0]]}`
-      ? ""
-      : tempContext;
+export default async function verifyDB(context) {
 
   const raw = JSON.stringify({
-    message,
+    message:"",
     context,
   });
 
@@ -26,9 +21,12 @@ export default async function runGraph(message, tempContext = "") {
   };
 
   return new Promise((resolve, reject) => {
-    fetch(`${OLLAMA_URL}/run_graph`, requestOptions)
+    fetch(`${OLLAMA_URL}/verify_database`, requestOptions)
       .then((response) => response.json())
-      .then((res) => resolve(res.response))
-      .catch((error) => reject(error));
+      .then((res) => {
+        console.log(res);
+        resolve(res.response.answer === "True" || res.response.answer === true);
+      })
+      .catch((error) => resolve("error"));
   });
 }

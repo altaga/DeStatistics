@@ -9,6 +9,7 @@ import { createTheme } from "@mui/material";
 import { lightBlue, lightGreen } from "@mui/material/colors";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { base, baseSepolia } from "viem/chains";
+import { ToastContainer } from "react-toastify";
 
 const theme = createTheme({
   palette: {
@@ -42,6 +43,7 @@ export default function Providers({ children }) {
       >
         <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </PrivyProvider>
+      <ToastContainer position="bottom-center" autoClose={1000} theme="dark"  />
     </ContextProvider>
   );
 }

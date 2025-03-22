@@ -16,3 +16,19 @@ export function parseCSVtoJSON_t1(data) {
     temp["data"] = tempData.slice(1).map(row => row.split(',')).map(row => row.slice(1))
     return temp
 }
+
+const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+export function generateString(length) {
+    let result = '';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+}
+
+export function getUnixTimestamp() {
+    return Math.floor(Date.now() / 1000);
+}

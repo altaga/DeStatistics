@@ -32,7 +32,7 @@ export default function Statistic() {
           <SimpleCharts data={data} />
         </div>
         <div className={styles.chatContainer}>
-          <Chat />
+          <Chat bucket = {data.bucket}/>
         </div>
       </div>
     </div>

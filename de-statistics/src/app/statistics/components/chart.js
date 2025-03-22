@@ -2,13 +2,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { BarChart } from "@mui/x-charts/BarChart";
 import React, { useEffect, useState } from "react";
-import styles from "./chart.module.css";
+import styles from "@/app/statistics/components/chart.module.css";
 import Link from "next/link";
 import ContextModule from "@/utils/contextModule";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
-const label = { inputProps: { "aria-label": "Include DB" } };
 
 export default function SimpleCharts({ data }) {
   const myContext = React.useContext(ContextModule);

@@ -35,6 +35,7 @@ const requestOptions = {
 async function fetchDB(url) {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log(url);
       let res = await fetch(url, requestOptions);
       let parsed = await res.text();
       resolve(parsed);
@@ -51,6 +52,7 @@ async function updateDB() {
       let res = await fetch(process.env.RECALL_URL, requestOptions);
       let parsed = await res.json();
       GeneralDB = parsed;
+      console.log(GeneralDB);
       resolve("ok");
     } catch (e) {
       console.log(e);
